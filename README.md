@@ -31,6 +31,10 @@ mvn compile
 1. **FizzBuzz** (`FizzBuzz.java`) - Classic FizzBuzz implementation
    - Print numbers 1-100, replace multiples of 3 with "Fizz", multiples of 5 with "Buzz"
    - For multiples of both 3 and 5, print "FizzBuzz"
+2. **Password Validation** ([Problem](https://github.com/JonahSul/katas/tree/password-verify) and [Solution](https://github.com/JonahSul/katas/tree/password-verify-solution))
+- Validate password length
+- Validate proper mix and count of characters
+- Validate user-provided password matches securely hashed password from application storage
 
 ### Creating New Katas
 
