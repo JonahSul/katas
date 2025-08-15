@@ -1,0 +1,12 @@
+{
+	"version": "2.0.0",
+	"tasks": [
+		{
+			"label": "Maven: Run Tests",
+			"type": "shell",
+			"command": "mvn test",
+			"problemMatcher": [],
+			"group": "test"
+		}
+	]
+}
