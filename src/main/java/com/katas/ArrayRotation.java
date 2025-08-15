@@ -28,8 +28,25 @@ public class ArrayRotation {
      * @param k the number of steps to rotate
      */
     public void rotate(int[] nums, int k) {
-        // TODO: Implement array rotation
-        throw new UnsupportedOperationException("Not implemented yet");
+        if (nums == null || nums.length <= 1) return;
+        
+        k = k % nums.length; // Handle k larger than array length
+        if (k == 0) return;
+        
+        // Use array reversal technique for in-place rotation
+        reverse(nums, 0, nums.length - 1);
+        reverse(nums, 0, k - 1);
+        reverse(nums, k, nums.length - 1);
+    }
+    
+    private void reverse(int[] nums, int start, int end) {
+        while (start < end) {
+            int temp = nums[start];
+            nums[start] = nums[end];
+            nums[end] = temp;
+            start++;
+            end--;
+        }
     }
     
     /**
@@ -39,8 +56,16 @@ public class ArrayRotation {
      * @return new rotated array
      */
     public int[] rotateWithExtraSpace(int[] nums, int k) {
-        // TODO: Implement with O(n) extra space
-        throw new UnsupportedOperationException("Not implemented yet");
+        if (nums == null || nums.length <= 1) return nums.clone();
+        
+        k = k % nums.length;
+        int[] result = new int[nums.length];
+        
+        for (int i = 0; i < nums.length; i++) {
+            result[(i + k) % nums.length] = nums[i];
+        }
+        
+        return result;
     }
     
     /**
@@ -49,7 +74,14 @@ public class ArrayRotation {
      * @param k the number of steps to rotate
      */
     public void rotateInPlace(int[] nums, int k) {
-        // TODO: Implement in-place rotation
-        throw new UnsupportedOperationException("Not implemented yet");
+        if (nums == null || nums.length <= 1) return;
+        
+        k = k % nums.length;
+        if (k == 0) return;
+        
+        // Same as the main rotate method - reversal technique
+        reverse(nums, 0, nums.length - 1);
+        reverse(nums, 0, k - 1);
+        reverse(nums, k, nums.length - 1);
     }
 }

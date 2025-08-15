@@ -45,8 +45,9 @@ public class HashTable<K, V> {
     
     @SuppressWarnings("unchecked")
     public HashTable() {
-        // TODO: Initialize hash table
-        throw new UnsupportedOperationException("Not implemented yet");
+        this.capacity = INITIAL_CAPACITY;
+        this.size = 0;
+        this.buckets = new Entry[capacity];
     }
     
     /**
@@ -56,8 +57,31 @@ public class HashTable<K, V> {
      * @return the previous value associated with key, or null if none
      */
     public V put(K key, V value) {
-        // TODO: Implement put operation
-        throw new UnsupportedOperationException("Not implemented yet");
+        if (getLoadFactor() >= LOAD_FACTOR_THRESHOLD) {
+            resize();
+        }
+        
+        int index = hash(key);
+        Entry<K, V> head = buckets[index];
+        
+        // Search for existing key
+        Entry<K, V> current = head;
+        while (current != null) {
+            if (Objects.equals(current.key, key)) {
+                V oldValue = current.value;
+                current.value = value;
+                return oldValue;
+            }
+            current = current.next;
+        }
+        
+        // Add new entry at the beginning of the chain
+        Entry<K, V> newEntry = new Entry<>(key, value);
+        newEntry.next = head;
+        buckets[index] = newEntry;
+        size++;
+        
+        return null;
     }
     
     /**
@@ -66,8 +90,17 @@ public class HashTable<K, V> {
      * @return the value, or null if key not found
      */
     public V get(K key) {
-        // TODO: Implement get operation
-        throw new UnsupportedOperationException("Not implemented yet");
+        int index = hash(key);
+        Entry<K, V> current = buckets[index];
+        
+        while (current != null) {
+            if (Objects.equals(current.key, key)) {
+                return current.value;
+            }
+            current = current.next;
+        }
+        
+        return null;
     }
     
     /**
@@ -76,8 +109,31 @@ public class HashTable<K, V> {
      * @return the removed value, or null if key not found
      */
     public V remove(K key) {
-        // TODO: Implement remove operation
-        throw new UnsupportedOperationException("Not implemented yet");
+        int index = hash(key);
+        Entry<K, V> head = buckets[index];
+        
+        if (head == null) return null;
+        
+        // If head is the target
+        if (Objects.equals(head.key, key)) {
+            buckets[index] = head.next;
+            size--;
+            return head.value;
+        }
+        
+        // Search in the chain
+        Entry<K, V> current = head;
+        while (current.next != null) {
+            if (Objects.equals(current.next.key, key)) {
+                V value = current.next.value;
+                current.next = current.next.next;
+                size--;
+                return value;
+            }
+            current = current.next;
+        }
+        
+        return null;
     }
     
     /**
@@ -86,8 +142,21 @@ public class HashTable<K, V> {
      * @return true if key exists, false otherwise
      */
     public boolean containsKey(K key) {
-        // TODO: Implement containsKey operation
-        throw new UnsupportedOperationException("Not implemented yet");
+        return get(key) != null || (get(key) == null && hasNullValueForKey(key));
+    }
+    
+    private boolean hasNullValueForKey(K key) {
+        int index = hash(key);
+        Entry<K, V> current = buckets[index];
+        
+        while (current != null) {
+            if (Objects.equals(current.key, key)) {
+                return true;
+            }
+            current = current.next;
+        }
+        
+        return false;
     }
     
     /**
@@ -111,8 +180,15 @@ public class HashTable<K, V> {
      * @return set of keys
      */
     public Set<K> keySet() {
-        // TODO: Implement keySet operation
-        throw new UnsupportedOperationException("Not implemented yet");
+        Set<K> keys = new HashSet<>();
+        for (Entry<K, V> head : buckets) {
+            Entry<K, V> current = head;
+            while (current != null) {
+                keys.add(current.key);
+                current = current.next;
+            }
+        }
+        return keys;
     }
     
     /**
@@ -120,16 +196,23 @@ public class HashTable<K, V> {
      * @return collection of values
      */
     public Collection<V> values() {
-        // TODO: Implement values operation
-        throw new UnsupportedOperationException("Not implemented yet");
+        List<V> values = new ArrayList<>();
+        for (Entry<K, V> head : buckets) {
+            Entry<K, V> current = head;
+            while (current != null) {
+                values.add(current.value);
+                current = current.next;
+            }
+        }
+        return values;
     }
     
     /**
      * Removes all mappings.
      */
     public void clear() {
-        // TODO: Implement clear operation
-        throw new UnsupportedOperationException("Not implemented yet");
+        Arrays.fill(buckets, null);
+        size = 0;
     }
     
     /**
@@ -138,8 +221,8 @@ public class HashTable<K, V> {
      * @return hash code
      */
     private int hash(K key) {
-        // TODO: Implement hash function
-        throw new UnsupportedOperationException("Not implemented yet");
+        if (key == null) return 0;
+        return Math.abs(key.hashCode()) % capacity;
     }
     
     /**
@@ -147,8 +230,19 @@ public class HashTable<K, V> {
      */
     @SuppressWarnings("unchecked")
     private void resize() {
-        // TODO: Implement resize operation
-        throw new UnsupportedOperationException("Not implemented yet");
+        Entry<K, V>[] oldBuckets = buckets;
+        capacity *= 2;
+        size = 0;
+        buckets = new Entry[capacity];
+        
+        // Rehash all existing entries
+        for (Entry<K, V> head : oldBuckets) {
+            Entry<K, V> current = head;
+            while (current != null) {
+                put(current.key, current.value);
+                current = current.next;
+            }
+        }
     }
     
     /**

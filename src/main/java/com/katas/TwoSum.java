@@ -1,5 +1,7 @@
 package com.katas;
 
+import java.util.*;
+
 /**
  * Two Sum Kata
  * 
@@ -39,8 +41,7 @@ public class TwoSum {
      * @return array containing the two indices
      */
     public int[] twoSum(int[] nums, int target) {
-        // TODO: Implement two sum solution
-        throw new UnsupportedOperationException("Not implemented yet");
+        return twoSumOptimized(nums, target);
     }
     
     /**
@@ -50,8 +51,14 @@ public class TwoSum {
      * @return array containing the two indices
      */
     public int[] twoSumBruteForce(int[] nums, int target) {
-        // TODO: Implement brute force solution
-        throw new UnsupportedOperationException("Not implemented yet");
+        for (int i = 0; i < nums.length; i++) {
+            for (int j = i + 1; j < nums.length; j++) {
+                if (nums[i] + nums[j] == target) {
+                    return new int[]{i, j};
+                }
+            }
+        }
+        throw new IllegalArgumentException("No two sum solution");
     }
     
     /**
@@ -61,7 +68,16 @@ public class TwoSum {
      * @return array containing the two indices
      */
     public int[] twoSumOptimized(int[] nums, int target) {
-        // TODO: Implement optimized solution
-        throw new UnsupportedOperationException("Not implemented yet");
+        Map<Integer, Integer> map = new HashMap<>();
+        
+        for (int i = 0; i < nums.length; i++) {
+            int complement = target - nums[i];
+            if (map.containsKey(complement)) {
+                return new int[]{map.get(complement), i};
+            }
+            map.put(nums[i], i);
+        }
+        
+        throw new IllegalArgumentException("No two sum solution");
     }
 }

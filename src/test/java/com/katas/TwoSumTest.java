@@ -60,6 +60,10 @@ class TwoSumTest {
     void shouldHandleLargerArray() {
         int[] nums = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
         int[] result = twoSum.twoSum(nums, 17);
-        assertThat(result).containsExactlyInAnyOrder(6, 9); // 7 + 10 = 17
+        
+        // Multiple valid answers exist: [6,9] (7+10=17) or [7,8] (8+9=17)
+        // Our HashMap implementation returns the first one found
+        assertThat(nums[result[0]] + nums[result[1]]).isEqualTo(17);
+        assertThat(result).hasSize(2);
     }
 }

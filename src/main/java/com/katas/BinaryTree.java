@@ -48,8 +48,21 @@ public class BinaryTree {
      * @param val the value to insert
      */
     public void insert(int val) {
-        // TODO: Implement BST insertion
-        throw new UnsupportedOperationException("Not implemented yet");
+        root = insertRec(root, val);
+    }
+    
+    private TreeNode insertRec(TreeNode node, int val) {
+        if (node == null) {
+            return new TreeNode(val);
+        }
+        
+        if (val <= node.val) {
+            node.left = insertRec(node.left, val);
+        } else {
+            node.right = insertRec(node.right, val);
+        }
+        
+        return node;
     }
     
     /**
@@ -57,8 +70,17 @@ public class BinaryTree {
      * @return list of values in inorder
      */
     public List<Integer> inorderTraversal() {
-        // TODO: Implement inorder traversal
-        throw new UnsupportedOperationException("Not implemented yet");
+        List<Integer> result = new ArrayList<>();
+        inorderRec(root, result);
+        return result;
+    }
+    
+    private void inorderRec(TreeNode node, List<Integer> result) {
+        if (node != null) {
+            inorderRec(node.left, result);
+            result.add(node.val);
+            inorderRec(node.right, result);
+        }
     }
     
     /**
@@ -66,8 +88,17 @@ public class BinaryTree {
      * @return list of values in preorder
      */
     public List<Integer> preorderTraversal() {
-        // TODO: Implement preorder traversal
-        throw new UnsupportedOperationException("Not implemented yet");
+        List<Integer> result = new ArrayList<>();
+        preorderRec(root, result);
+        return result;
+    }
+    
+    private void preorderRec(TreeNode node, List<Integer> result) {
+        if (node != null) {
+            result.add(node.val);
+            preorderRec(node.left, result);
+            preorderRec(node.right, result);
+        }
     }
     
     /**
@@ -75,8 +106,17 @@ public class BinaryTree {
      * @return list of values in postorder
      */
     public List<Integer> postorderTraversal() {
-        // TODO: Implement postorder traversal
-        throw new UnsupportedOperationException("Not implemented yet");
+        List<Integer> result = new ArrayList<>();
+        postorderRec(root, result);
+        return result;
+    }
+    
+    private void postorderRec(TreeNode node, List<Integer> result) {
+        if (node != null) {
+            postorderRec(node.left, result);
+            postorderRec(node.right, result);
+            result.add(node.val);
+        }
     }
     
     /**
@@ -84,8 +124,21 @@ public class BinaryTree {
      * @return list of values level by level
      */
     public List<Integer> levelOrderTraversal() {
-        // TODO: Implement level-order traversal
-        throw new UnsupportedOperationException("Not implemented yet");
+        List<Integer> result = new ArrayList<>();
+        if (root == null) return result;
+        
+        Queue<TreeNode> queue = new LinkedList<>();
+        queue.offer(root);
+        
+        while (!queue.isEmpty()) {
+            TreeNode node = queue.poll();
+            result.add(node.val);
+            
+            if (node.left != null) queue.offer(node.left);
+            if (node.right != null) queue.offer(node.right);
+        }
+        
+        return result;
     }
     
     /**
@@ -93,8 +146,12 @@ public class BinaryTree {
      * @return the maximum depth
      */
     public int maxDepth() {
-        // TODO: Implement max depth calculation
-        throw new UnsupportedOperationException("Not implemented yet");
+        return maxDepthRec(root);
+    }
+    
+    private int maxDepthRec(TreeNode node) {
+        if (node == null) return 0;
+        return 1 + Math.max(maxDepthRec(node.left), maxDepthRec(node.right));
     }
     
     /**
@@ -102,8 +159,21 @@ public class BinaryTree {
      * @return true if balanced, false otherwise
      */
     public boolean isBalanced() {
-        // TODO: Implement balance check
-        throw new UnsupportedOperationException("Not implemented yet");
+        return isBalancedRec(root) != -1;
+    }
+    
+    private int isBalancedRec(TreeNode node) {
+        if (node == null) return 0;
+        
+        int leftHeight = isBalancedRec(node.left);
+        if (leftHeight == -1) return -1;
+        
+        int rightHeight = isBalancedRec(node.right);
+        if (rightHeight == -1) return -1;
+        
+        if (Math.abs(leftHeight - rightHeight) > 1) return -1;
+        
+        return 1 + Math.max(leftHeight, rightHeight);
     }
     
     /**
@@ -111,8 +181,16 @@ public class BinaryTree {
      * @return true if valid BST, false otherwise
      */
     public boolean isValidBST() {
-        // TODO: Implement BST validation
-        throw new UnsupportedOperationException("Not implemented yet");
+        return isValidBSTRec(root, Long.MIN_VALUE, Long.MAX_VALUE);
+    }
+    
+    private boolean isValidBSTRec(TreeNode node, long minVal, long maxVal) {
+        if (node == null) return true;
+        
+        if (node.val <= minVal || node.val >= maxVal) return false;
+        
+        return isValidBSTRec(node.left, minVal, node.val) && 
+               isValidBSTRec(node.right, node.val, maxVal);
     }
     
     /**
@@ -122,8 +200,25 @@ public class BinaryTree {
      * @return the LCA node value, or null if not found
      */
     public Integer lowestCommonAncestor(int p, int q) {
-        // TODO: Implement LCA finding
-        throw new UnsupportedOperationException("Not implemented yet");
+        TreeNode lca = lcaRec(root, p, q);
+        return lca != null ? lca.val : null;
+    }
+    
+    private TreeNode lcaRec(TreeNode node, int p, int q) {
+        if (node == null) return null;
+        
+        // If both p and q are smaller than node, LCA is in left subtree
+        if (p < node.val && q < node.val) {
+            return lcaRec(node.left, p, q);
+        }
+        
+        // If both p and q are greater than node, LCA is in right subtree
+        if (p > node.val && q > node.val) {
+            return lcaRec(node.right, p, q);
+        }
+        
+        // If we reach here, then node is the LCA
+        return node;
     }
     
     public TreeNode getRoot() {
